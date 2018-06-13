@@ -6,7 +6,7 @@ from pickle import dump
 OUTPUT_FILE = 'scraper_results.store'
 
 
-def sync():
+def sync(mock=False):
     CHECKS_TO_RUN = {
         'Hyatt': is_hyatt_available, 'Hilton': is_hilton_available, 'Mariott': is_mariott_available,
         'Sharaton': is_sharaton_available, 'Westin': is_westin_available
@@ -16,7 +16,7 @@ def sync():
 
     for hotel, check_func in CHECKS_TO_RUN.items():
         try:
-            sync_result[hotel] = check_func()
+            sync_result[hotel] = check_func() if not mock else (False, 'DEBUG')
         except Exception as e:
             sync_result[hotel] = (False, str(e))
 

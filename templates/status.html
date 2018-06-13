@@ -14,6 +14,10 @@
             body {
                 font-family: 'Roboto', sans-serif;
             }
+
+            .available {
+                background-color: #33CC33;
+            }
         </style>
     </head>
     <body>
@@ -30,16 +34,17 @@
                         <div class="col-md-12 column">
                             <div class="list-group">
                                 {% for hotel, result_tuple in hotel_results.items() %}
-                                <div class="list-group-item">
+                                <div class="list-group-item {{'available' if result_tuple[0] else '' }}">
                                 <h4 class="list-group-item-heading op">
-                                    {{ hotel }} <span class="pull-right">{{ result_tuple }}</span>
+                                    {{ hotel }} <span class="pull-right">{{ result_tuple[1] }}</span>
                                 </h4>
-                                {% endfor %}             
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
+                <p style="margin-top: 1em;"><i>Last check was performed at <strong>{{ last_modified }}</strong>.</i></p>
             </div>
         </div>
     </body>
