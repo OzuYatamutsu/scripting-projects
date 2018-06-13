@@ -36,8 +36,7 @@ def sync(mock=False):
 
                 meta_result[hotel] = {'url': url, 'screenshot': filename}
             except Exception as e:
-                print(e)
-                meta_result[hotel] = {'url': '', 'screenshot': ''}
+                meta_result[hotel] = {'url': '', 'screenshot': str(e)}
         except Exception as e:
             sync_result[hotel] = (False, str(e))
 
