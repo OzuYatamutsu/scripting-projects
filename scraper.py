@@ -5,10 +5,9 @@ from sys import stdout
 
 log = getLogger(__name__)
 log.addHandler(StreamHandler(stdout))
-RESULT_CACHE = {}  # Hack to store more information
 
 
-def is_hyatt_available() -> bool:
+def is_hyatt_available() -> tuple:
     START_DATE, END_DATE = '2018-08-30', '2018-09-03'
     URL = (
         'https://www.hyatt.com/en-US/search/Hyatt%20Regency%20Atlanta?rooms=1&adults=1&'
@@ -21,15 +20,12 @@ def is_hyatt_available() -> bool:
 
         try:
             not_available_warning = browser.find_element_by_css_selector('.alert-warn')
-            log.info(not_available_warning.text)
-
-            RESULT_CACHE['Hyatt'] = not_available_warning.text
+            return False, not_available_warning.text
         except NoSuchElementException:
-            RESULT_CACHE['Hyatt'] = "AVAILABLE"
-            return True
+            return True, "AVAILABLE"
         return False
 
-def is_hilton_available() -> bool:
+def is_hilton_available() -> tuple:
     START_DATE, END_DATE = '30 Aug 2018', '03 Sep 2018'
     URL = 'http://www3.hilton.com/en/hotels/georgia/hilton-atlanta-ATLAHHH/index.html'
 
@@ -45,16 +41,12 @@ def is_hilton_available() -> bool:
     
         try:
             not_available_warning = browser.find_element_by_css_selector('.alertBox.alert')
-            log.info(not_available_warning.text)
-
-            RESULT_CACHE['Hilton'] = not_available_warning.text
+            return False, not_available_warning.text
         except NoSuchElementException:
-            RESULT_CACHE['Hilton'] = "AVAILABLE"
-            return True
-        return False
+            return True, "AVAILABLE"
 
 
-def is_mariott_available() -> bool:
+def is_mariott_available() -> tuple:
     START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
     URL = (
         'https://www.marriott.com/search/default.mi?roomCount=1&'
@@ -68,16 +60,12 @@ def is_mariott_available() -> bool:
         browser.find_element_by_id('edit-search-form').submit()
         try:
             not_available_warning = browser.find_element_by_class_name('l-error-Container')
-            log.info(not_available_warning.text)
-
-            RESULT_CACHE['Mariott'] = not_available_warning.text
+            return False, not_available_warning.text
         except NoSuchElementException:
-            RESULT_CACHE['Mariott'] = "AVAILABLE"
-            return True
-        return False
+            return True, "AVAILABLE"
         
 
-def is_sharaton_available() -> bool:
+def is_sharaton_available() -> tuple:
     START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
     URL = (
         'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1144&language=en_US&'
@@ -90,16 +78,12 @@ def is_sharaton_available() -> bool:
     
         try:
             not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
-            log.info(not_available_warning.text)
-
-            RESULT_CACHE['Sharaton'] = not_available_warning.text
+            return False, not_available_warning.text
         except NoSuchElementException:
-            RESULT_CACHE['Sharaton'] = "AVAILABLE" 
-            return True
-        return False
+            return True, "AVAILABLE"
 
 
-def is_westin_available() -> bool:
+def is_westin_available() -> tuple:
     START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
     URL = (
         'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1023&language=en_US&'
@@ -112,22 +96,14 @@ def is_westin_available() -> bool:
     
         try:
             not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
-            log.info(not_available_warning.text)
-
-            RESULT_CACHE['Westin'] = not_available_warning.text
+            return False, not_available_warning.text
         except NoSuchElementException:
-            RESULT_CACHE['Westin'] = "AVAILABLE"
-            return True
-        return False
-
+            return True, "AVAILABLE"
 
 
 if __name__ == '__main__':
-    print(f"Hyatt is {'AVAILABLE' if is_hyatt_available() else 'not available'}")
-    print(f"Hilton is {'AVAILABLE' if is_hilton_available() else 'not available'}")
-    print(f"Mariott is {'AVAILABLE' if is_mariott_available() else 'not available'}")
-    print(f"Sharaton is {'AVAILABLE' if is_sharaton_available() else 'not available'}")
-    print(f"Westin is {'AVAILABLE' if is_westin_available() else 'not available'}")
-
-    for hotel, result in RESULT_CACHE.items():
-        print(f"{hotel} - {result}")
+    print(' - '.join([str(value) for value in is_hyatt_available()]))
+    print(' - '.join([str(value) for value in is_hilton_available()]))
+    print(' - '.join([str(value) for value in is_mariott_available()]))
+    print(' - '.join([str(value) for value in is_sharaton_available()]))
+    print(' - '.join([str(value) for value in is_westin_available()]))
