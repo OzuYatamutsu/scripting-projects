@@ -1,6 +1,5 @@
-from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-browser = webdriver.Chrome()
+from browser_utils import Browser, set_element_value
 
 
 def is_hyatt_available() -> bool:
@@ -11,35 +10,36 @@ def is_hyatt_available() -> bool:
         'rate=Standard&kids=0'
     )
 
-    browser.get(URL)
+    with Browser() as browser:
+        browser.get(URL)
 
-    try:
-        not_available_warning = browser.find_element_by_css_selector('.alert-warn')
-        print(not_available_warning.text)
-    except NoSuchElementException:
-        return True
-    return False
-
+        try:
+            not_available_warning = browser.find_element_by_css_selector('.alert-warn')
+            print(not_available_warning.text)
+        except NoSuchElementException:
+            return True
+        return False
 
 def is_hilton_available() -> bool:
     START_DATE, END_DATE = '30 Aug 2018', '03 Sep 2018'
     URL = 'http://www3.hilton.com/en/hotels/georgia/hilton-atlanta-ATLAHHH/index.html'
 
-    browser.get(URL)
-
-    start_date = browser.find_element_by_css_selector('[name=arrivalDate]')
-    end_date = browser.find_element_by_css_selector('[name=departureDate]')
-
-    browser.execute_script(f"arguments[0].value = '{START_DATE}'", start_date)
-    browser.execute_script(f"arguments[0].value = '{END_DATE}", end_date)
-    browser.execute_script("jQuery('#frmfindHotel').submit()")
-
-    try:
-        not_available_warning = browser.find_element_by_css_selector('.alertBox.alert')
-        print(not_available_warning.text)
-    except NoSuchElementException:
-        return True
-    return False
+    with Browser() as browser:
+        browser.get(URL)
+    
+        start_date = browser.find_element_by_css_selector('[name=arrivalDate]')
+        end_date = browser.find_element_by_css_selector('[name=departureDate]')
+    
+        set_element_value(browser, start_date, START_DATE)
+        set_element_value(browser, end_date, END_DATE)
+        browser.execute_script("jQuery('#frmfindHotel').submit()")
+    
+        try:
+            not_available_warning = browser.find_element_by_css_selector('.alertBox.alert')
+            print(not_available_warning.text)
+        except NoSuchElementException:
+            return True
+        return False
 
 
 def is_mariott_available() -> bool:
@@ -52,3 +52,8 @@ def is_sharaton_available() -> bool:
 
 def is_westin_available() -> bool:
     raise NotImplementedError
+
+
+if __name__ == '__main__':
+    is_hyatt_available()
+    is_hilton_available()
