@@ -29,8 +29,11 @@ def sync(mock=False):
             print(f"Running {check_func.__name__}...")
             sync_result[hotel] = check_func() if not mock else (False, 'DEBUG')
             try:
-                filename = f"screengrabs/{check_func.__name__}_{str(int(time()))}.png"
-                rename(OUTPUT_SCREENSHOT, filename)
+                # filename = f"screengrabs/{check_func.__name__}_{str(int(time()))}.png"
+                path = '/var/www/staging' 
+                filename = f"{check_func.__name__}_{str(int(time()))}.png"
+
+                rename(OUTPUT_SCREENSHOT, f'{path}/{filename}')
                 with open(OUTPUT_URL, 'r') as f:
                     url = f.readline()
 
