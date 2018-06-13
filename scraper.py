@@ -27,6 +27,8 @@ def is_hyatt_available() -> tuple:
             return True, "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
+            with open('.url', 'w') as f:
+                f.write(browser.current_url)
         return False, not_available_warning.text
 
 
@@ -51,6 +53,8 @@ def is_hilton_available() -> tuple:
             return True, "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
+            with open('.url', 'w') as f:
+                f.write(browser.current_url)
         return False, not_available_warning.text
 
 def is_mariott_available() -> tuple:
@@ -80,6 +84,8 @@ def is_mariott_available() -> tuple:
             return True, f"${lowest_rate:2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
+            with open('.url', 'w') as f:
+                f.write(browser.current_url)
         return False, not_available_warning.text
         
 
@@ -107,6 +113,8 @@ def is_sharaton_available() -> tuple:
             return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
+            with open('.url', 'w') as f:
+                f.write(browser.current_url)
         return False, not_available_warning.text
 
 
@@ -135,6 +143,8 @@ def is_westin_available() -> tuple:
             return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
+            with open('.url', 'w') as f:
+                f.write(browser.current_url)
         return False, not_available_warning.text
 
 

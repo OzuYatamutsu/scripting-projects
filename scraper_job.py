@@ -6,7 +6,9 @@ from pickle import dump
 from os import rename
 from time import time
 OUTPUT_FILE = 'scraper_results.store'
+OUTPUT_META_FILE = 'scraper_meta.store'
 OUTPUT_SCREENSHOT = 'final_state.png'
+OUTPUT_URL = '.url'
 
 
 def sync(mock=False):
@@ -23,14 +25,22 @@ def sync(mock=False):
             print(f"Running {check_func.__name__}...")
             sync_result[hotel] = check_func() if not mock else (False, 'DEBUG')
             try:
-                rename(OUTPUT_SCREENSHOT, f"{check_func.__name__}_{str(int(time()))}.png")
-            meta_result[hotel] = ()
+                filename = f"{check_func.__name__}_{str(int(time()))}.png"
+                rename(OUTPUT_SCREENSHOT, filename)
+                with open(OUTPUT_URL, 'r') as f:
+                    url = f.readline()
+
+                meta_result[hotel] = {'url': url, 'screenshot': filename}
+            except Exception as e:
+                meta_result[hotel] = {'url': '', 'screenshot': ''}
         except Exception as e:
             sync_result[hotel] = (False, str(e))
 
     # Store results to file system
     with open(OUTPUT_FILE, 'wb') as f:
         dump(sync_result, f)
+    with open(OUTPUT_META_FILE, 'wb') as f:
+        dump(meta_result, f)
 
 
 if __name__ == '__main__':
