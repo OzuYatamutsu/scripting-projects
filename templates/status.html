@@ -54,7 +54,7 @@
                             {% for hotel, result_dict in hotel_meta.items() %}
                             <tr>
                                 <td><a name="{{ hotel }}" href="{{ result_dict['url'] }}">{{ hotel }}</a></td>
-                                <td><img src="https://steakscorp.org/staging/{{ result_dict['screenshot'] }}" style="width: 50%"/></td>
+                                <td><a name="{{ hotel }}" href="{{ result_dict['url'] }}"><img src="https://steakscorp.org/staging/{{ result_dict['screenshot'] }}" style="width: 50%"/></a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
