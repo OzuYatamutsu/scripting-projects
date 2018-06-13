@@ -37,8 +37,10 @@
                                 {% for hotel, result_tuple in hotel_results.items() %}
                                 <div class="list-group-item {{'available' if result_tuple[0] else '' }}">
                                 <h4 class="list-group-item-heading op">
-                                    {{ hotel }} <span class="pull-right">{{ result_tuple[1] }}</span>
+                                    <a href="#{{ hotel }}">{{ hotel }}</a>
+                                      <span class="pull-right">{{ 'AVAILABLE' if result_tuple[0] else 'UNAVAILABLE' }}</span>
                                 </h4>
+                                <p>{{ result_tuple[1] }}</p>
                                 </div>
                                 {% endfor %}
                             </div>
