@@ -75,7 +75,7 @@ def is_mariott_available() -> tuple:
                 ).text.strip())
             except Exception:
                 lowest_rate = 9999.9
-            return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+            return True, f"${lowest_rate:2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         
 
 def is_sharaton_available() -> tuple:
@@ -100,7 +100,7 @@ def is_sharaton_available() -> tuple:
                 rate = float(rate.text.replace('USD', '').strip())
                 if rate < lowest_rate:
                     lowest_rate = rate
-            return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+            return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
 
 
 def is_westin_available() -> tuple:
