@@ -140,7 +140,7 @@ def is_westin_available() -> tuple:
                 rate = float(rate.text.replace('USD', '').strip())
                 if rate < lowest_rate:
                     lowest_rate = rate
-            return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+            return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
             with open('.url', 'w') as f:
