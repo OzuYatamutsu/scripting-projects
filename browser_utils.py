@@ -14,3 +14,7 @@ class Browser:
 
 def set_element_value(driver, element, value):
     driver.execute_script(f"arguments[0].value = '{value}'", element)
+
+
+def set_element_text(driver, element, value):
+    driver.execute_script(f"arguments[0].innerText = '{value}'", element)

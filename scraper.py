@@ -1,5 +1,11 @@
 from selenium.common.exceptions import NoSuchElementException
-from browser_utils import Browser, set_element_value
+from browser_utils import Browser, set_element_value, set_element_text
+from logging import getLogger, StreamHandler
+from sys import stdout
+
+log = getLogger(__name__)
+log.addHandler(StreamHandler(stdout))
+RESULT_CACHE = {}  # Hack to store more information
 
 
 def is_hyatt_available() -> bool:
@@ -15,8 +21,11 @@ def is_hyatt_available() -> bool:
 
         try:
             not_available_warning = browser.find_element_by_css_selector('.alert-warn')
-            print(not_available_warning.text)
+            log.info(not_available_warning.text)
+
+            RESULT_CACHE['Hyatt'] = not_available_warning.text
         except NoSuchElementException:
+            RESULT_CACHE['Hyatt'] = "AVAILABLE"
             return True
         return False
 
@@ -36,24 +45,89 @@ def is_hilton_available() -> bool:
     
         try:
             not_available_warning = browser.find_element_by_css_selector('.alertBox.alert')
-            print(not_available_warning.text)
+            log.info(not_available_warning.text)
+
+            RESULT_CACHE['Hilton'] = not_available_warning.text
         except NoSuchElementException:
+            RESULT_CACHE['Hilton'] = "AVAILABLE"
             return True
         return False
 
 
 def is_mariott_available() -> bool:
-    raise NotImplementedError
+    START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
+    URL = (
+        'https://www.marriott.com/search/default.mi?roomCount=1&'
+        f'fromDate={START_DATE}&toDate={END_DATE}&'
+        'numAdultsPerRoom=1&propertyCode=atlmq&'
+        'destinationAddress.location=265+Peachtree+Center+Avenue%2C+Atlanta%2C+GA%2C+30303%2C+US'
+    )
 
+    with Browser() as browser:
+        browser.get(URL)
+        browser.find_element_by_id('edit-search-form').submit()
+        try:
+            not_available_warning = browser.find_element_by_class_name('l-error-Container')
+            log.info(not_available_warning.text)
+
+            RESULT_CACHE['Mariott'] = not_available_warning.text
+        except NoSuchElementException:
+            RESULT_CACHE['Mariott'] = "AVAILABLE"
+            return True
+        return False
+        
 
 def is_sharaton_available() -> bool:
-    raise NotImplementedError
+    START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
+    URL = (
+        'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1144&language=en_US&'
+        'localeCode=en_US&ES=LPS_1144_EN_SI_BOOKWIDGET_SOUTH_NAD&'
+        f'arrivalDate={START_DATE}&departureDate={END_DATE}'
+    )
+
+    with Browser() as browser:
+        browser.get(URL)
+    
+        try:
+            not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
+            log.info(not_available_warning.text)
+
+            RESULT_CACHE['Sharaton'] = not_available_warning.text
+        except NoSuchElementException:
+            RESULT_CACHE['Sharaton'] = "AVAILABLE" 
+            return True
+        return False
 
 
 def is_westin_available() -> bool:
-    raise NotImplementedError
+    START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
+    URL = (
+        'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1023&language=en_US&'
+        'localeCode=en_US&ES=LPS_1023_EN_SI_BOOKWIDGET_SOUTH_NAD&'
+        f'arrivalDate={START_DATE}&departureDate={END_DATE}'
+    )
+
+    with Browser() as browser:
+        browser.get(URL)
+    
+        try:
+            not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
+            log.info(not_available_warning.text)
+
+            RESULT_CACHE['Westin'] = not_available_warning.text
+        except NoSuchElementException:
+            RESULT_CACHE['Westin'] = "AVAILABLE"
+            return True
+        return False
+
 
 
 if __name__ == '__main__':
-    is_hyatt_available()
-    is_hilton_available()
+    print(f"Hyatt is {'AVAILABLE' if is_hyatt_available() else 'not available'}")
+    print(f"Hilton is {'AVAILABLE' if is_hilton_available() else 'not available'}")
+    print(f"Mariott is {'AVAILABLE' if is_mariott_available() else 'not available'}")
+    print(f"Sharaton is {'AVAILABLE' if is_sharaton_available() else 'not available'}")
+    print(f"Westin is {'AVAILABLE' if is_westin_available() else 'not available'}")
+
+    for hotel, result in RESULT_CACHE.items():
+        print(f"{hotel} - {result}")
