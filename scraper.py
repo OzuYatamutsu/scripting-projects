@@ -81,7 +81,7 @@ def is_mariott_available() -> tuple:
                 ).text.strip())
             except Exception:
                 lowest_rate = 9999.9
-            return True, f"${lowest_rate:2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+            return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
             with open('.url', 'w') as f:
