@@ -13,7 +13,7 @@ def render_results():
     return render_template(
         'status.html',
         hotel_results=load_results(),
-        last_modified=f"{ctime(stat(DEFAULT_STORE_FILE).st_ctime)} (your timezone)"
+        last_modified=f"{ctime(stat(DEFAULT_STORE_FILE).st_ctime)} (Eastern Time)"
     )
 
 
