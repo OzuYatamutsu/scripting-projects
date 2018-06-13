@@ -23,10 +23,12 @@ def is_hyatt_available() -> tuple:
         try:
             sleep(TIMEOUT_SECS)
             not_available_warning = browser.find_element_by_css_selector('.alert-warn')
-            return False, not_available_warning.text
         except NoSuchElementException:
             return True, "AVAILABLE"
-        return False
+        finally:
+            browser.save_screenshot('final_state.png')
+        return False, not_available_warning.text
+
 
 def is_hilton_available() -> tuple:
     START_DATE, END_DATE = '30 Aug 2018', '03 Sep 2018'
@@ -45,10 +47,11 @@ def is_hilton_available() -> tuple:
         try:
             sleep(TIMEOUT_SECS)
             not_available_warning = browser.find_element_by_css_selector('.alertBox.alert')
-            return False, not_available_warning.text
         except NoSuchElementException:
             return True, "AVAILABLE"
-
+        finally:
+            browser.save_screenshot('final_state.png')
+        return False, not_available_warning.text
 
 def is_mariott_available() -> tuple:
     START_DATE, END_DATE = '08/30/2018'.replace('/', '%2F'), '09/03/2018'.replace('/', '%2F')
@@ -65,7 +68,6 @@ def is_mariott_available() -> tuple:
         try:
             sleep(TIMEOUT_SECS)
             not_available_warning = browser.find_element_by_class_name('l-error-Container')
-            return False, not_available_warning.text
         except NoSuchElementException:
             # Available. Get price below:
             try:
@@ -76,6 +78,9 @@ def is_mariott_available() -> tuple:
             except Exception:
                 lowest_rate = 9999.9
             return True, f"${lowest_rate:2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+        finally:
+            browser.save_screenshot('final_state.png')
+        return False, not_available_warning.text
         
 
 def is_sharaton_available() -> tuple:
@@ -92,7 +97,6 @@ def is_sharaton_available() -> tuple:
         try:
             sleep(TIMEOUT_SECS)
             not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
-            return False, not_available_warning.text
         except NoSuchElementException:
             # Available. Get price below:
             lowest_rate = 9999.9
@@ -101,6 +105,9 @@ def is_sharaton_available() -> tuple:
                 if rate < lowest_rate:
                     lowest_rate = rate
             return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+        finally:
+            browser.save_screenshot('final_state.png')
+        return False, not_available_warning.text
 
 
 def is_westin_available() -> tuple:
@@ -117,7 +124,6 @@ def is_westin_available() -> tuple:
         try:
             sleep(TIMEOUT_SECS)
             not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
-            return False, not_available_warning.text
         except NoSuchElementException:
             # Available. Get price below:
             sleep(TIMEOUT_SECS)
@@ -127,6 +133,9 @@ def is_westin_available() -> tuple:
                 if rate < lowest_rate:
                     lowest_rate = rate
             return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+        finally:
+            browser.save_screenshot('final_state.png')
+        return False, not_available_warning.text
 
 
 if __name__ == '__main__':

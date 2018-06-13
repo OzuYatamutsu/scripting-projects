@@ -2,7 +2,7 @@ from pickle import load
 from time import ctime
 from pprint import pprint
 from os import stat
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 app = Flask(__name__)
 DEFAULT_STORE_FILE = 'scraper_results.store'
 
@@ -15,6 +15,11 @@ def render_results():
         hotel_results=load_results(),
         last_modified=f"{ctime(stat(DEFAULT_STORE_FILE).st_ctime)} (Eastern Time)"
     )
+
+
+@app.route('/screengrab/<path:path>')
+def serve_screenshot(path):
+    return send_from_directory('screengrabs', path)
 
 
 def load_results(file=DEFAULT_STORE_FILE) -> dict:
