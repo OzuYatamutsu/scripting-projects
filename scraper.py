@@ -1,6 +1,7 @@
 from selenium.common.exceptions import NoSuchElementException
 from browser_utils import Browser, set_element_value, set_element_text
 from logging import getLogger, StreamHandler
+from time import sleep
 from sys import stdout
 
 log = getLogger(__name__)
@@ -19,6 +20,7 @@ def is_hyatt_available() -> tuple:
         browser.get(URL)
 
         try:
+            sleep(3)
             not_available_warning = browser.find_element_by_css_selector('.alert-warn')
             return False, not_available_warning.text
         except NoSuchElementException:
@@ -40,6 +42,7 @@ def is_hilton_available() -> tuple:
         browser.execute_script("jQuery('#frmfindHotel').submit()")
     
         try:
+            sleep(3)
             not_available_warning = browser.find_element_by_css_selector('.alertBox.alert')
             return False, not_available_warning.text
         except NoSuchElementException:
@@ -59,10 +62,19 @@ def is_mariott_available() -> tuple:
         browser.get(URL)
         browser.find_element_by_id('edit-search-form').submit()
         try:
+            sleep(3)
             not_available_warning = browser.find_element_by_class_name('l-error-Container')
             return False, not_available_warning.text
         except NoSuchElementException:
-            return True, "AVAILABLE"
+            # Available. Get price below:
+            try:
+                lowest_rate = float(browser.find_element_by_css_selector(
+                    '[href="/reservation/availabilitySearch.mi?propertyCode=ATLMQ&isSearch=true&currency="] '
+                    '> .rate-block > .price-night > .t-price'
+                ).text.strip())
+            except Exception:
+                lowest_rate = 9999.9
+            return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         
 
 def is_sharaton_available() -> tuple:
@@ -77,10 +89,17 @@ def is_sharaton_available() -> tuple:
         browser.get(URL)
     
         try:
+            sleep(3)
             not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
             return False, not_available_warning.text
         except NoSuchElementException:
-            return True, "AVAILABLE"
+            # Available. Get price below:
+            lowest_rate = 9999.9
+            for rate in browser.find_elements_by_class_name('roomRate'):
+                rate = float(rate.text.replace('USD', '').strip())
+                if rate < lowest_rate:
+                    lowest_rate = rate
+            return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
 
 
 def is_westin_available() -> tuple:
@@ -95,10 +114,18 @@ def is_westin_available() -> tuple:
         browser.get(URL)
     
         try:
+            sleep(3)
             not_available_warning = browser.find_element_by_class_name('altAvailabilityMsg')
             return False, not_available_warning.text
         except NoSuchElementException:
-            return True, "AVAILABLE"
+            # Available. Get price below:
+            sleep(1)
+            lowest_rate = 9999.9
+            for rate in browser.find_elements_by_class_name('roomRate'):
+                rate = float(rate.text.replace('USD', '').strip())
+                if rate < lowest_rate:
+                    lowest_rate = rate
+            return True, f"${lowest_rate}/night" if lowest_rate != 9999.9 else "AVAILABLE"
 
 
 if __name__ == '__main__':

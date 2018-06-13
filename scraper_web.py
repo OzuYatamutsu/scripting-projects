@@ -1,4 +1,6 @@
 from pickle import load
+from time import ctime
+from pprint import pprint
 
 
 def load_results(file='scraper_results.store') -> dict:
@@ -6,4 +8,6 @@ def load_results(file='scraper_results.store') -> dict:
         return load(f)
 
 if __name__ == '__main__':
-    print(str(load_results()))  # TODO
+    pprint(f"Last updated: {ctime()}.")
+    print("")
+    pprint(load_results())  # TODO
