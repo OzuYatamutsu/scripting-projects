@@ -1,13 +1,12 @@
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
 
 class Browser:
     def __init__(self):
-        # self.browser = webdriver.Chrome()
         self.options = Options()
         self.options.set_headless(headless=True)
-        self.browser = webdriver.Firefox(firefox_options=self.options)
+        self.browser = webdriver.Chrome(chrome_options=self.options)
     
     def __enter__(self):
         return self.browser
