@@ -16,6 +16,7 @@ def sync(mock=False):
 
     for hotel, check_func in CHECKS_TO_RUN.items():
         try:
+            print(f"Running {check_func.__name__}...")
             sync_result[hotel] = check_func() if not mock else (False, 'DEBUG')
         except Exception as e:
             sync_result[hotel] = (False, str(e))
