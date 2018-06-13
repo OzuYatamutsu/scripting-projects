@@ -3,7 +3,8 @@ from scraper import (
     is_sharaton_available, is_westin_available
 )
 from pickle import dump
-from os import rename
+from os import rename, mkdir
+from os.path import isdir
 from time import time
 OUTPUT_FILE = 'scraper_results.store'
 OUTPUT_META_FILE = 'scraper_meta.store'
@@ -20,12 +21,15 @@ def sync(mock=False):
     sync_result = {}
     meta_result = {}
 
+    if not isdir('screengrabs'):
+        mkdir('screengrabs')
+
     for hotel, check_func in CHECKS_TO_RUN.items():
         try:
             print(f"Running {check_func.__name__}...")
             sync_result[hotel] = check_func() if not mock else (False, 'DEBUG')
             try:
-                filename = f"{check_func.__name__}_{str(int(time()))}.png"
+                filename = f"screengrabs/{check_func.__name__}_{str(int(time()))}.png"
                 rename(OUTPUT_SCREENSHOT, filename)
                 with open(OUTPUT_URL, 'r') as f:
                     url = f.readline()
