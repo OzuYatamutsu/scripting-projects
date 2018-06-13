@@ -18,7 +18,7 @@ def render_results():
     )
 
 
-@app.route('//screengrab/<path:path>')
+@app.route('/screengrabs/<path:path>')
 def serve_screenshot(path):
     return send_from_directory('screengrabs', path)
 
