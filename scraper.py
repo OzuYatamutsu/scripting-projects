@@ -148,9 +148,44 @@ def is_westin_available() -> tuple:
         return False, not_available_warning.text
 
 
+def is_hotel_indigo_available() -> tuple:
+    # Month, day
+    START_DATE, END_DATE = ('72018', '30'), ('82018', '3')
+    URL = (
+        'https://www.ihg.com/hotelindigo/hotels/us/en/find-hotels/hotel/list?qDest=Atlanta,%20GA,%20United%20States&'
+        f'qCiMy={START_DATE[0]}&qCiD={START_DATE[1]}&qCoMy={END_DATE[0]}&qCoD={END_DATE[1]}&'
+        'qAdlt=1&qChld=0&qRms=1&qRtP=6CBARC&qCpid=100857558&qAkamaiCC=US&qSrt=sBR&'
+        'qBrs=ic.ki.ul.in.cp.vn.hi.ex.cv.rs.va.cw.sb.ma&qAAR=6CBARC&srb_u=0&qRad=30'
+    )
+
+    with Browser() as browser:
+        browser.get(URL)
+    
+        try:
+            sleep(TIMEOUT_SECS)
+            not_available_warning = browser.find_element_by_class_name('rate')\
+                .find_element_by_class_name('noAvailabilityContainer')
+        except NoSuchElementException:
+            # Available. Get price below:
+            sleep(TIMEOUT_SECS)
+            dollars = browser.find_elements_by_class_name('[data-slnm-ihg="rateValue"]').text
+            try:
+                cents = browser.find_elements_by_class_name('[data-slnm-ihg="rateDecimalValue"]').text 
+            except Exception as e:
+                cents = '0'
+            lowest_rate = f'{dollars}.{cents}'
+            return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+        finally:
+            browser.save_screenshot('final_state.png')
+            with open('.url', 'w') as f:
+                f.write(browser.current_url)
+        return False, not_available_warning.text
+
+
 if __name__ == '__main__':
     print(' - '.join([str(value) for value in is_hyatt_available()]))
     print(' - '.join([str(value) for value in is_hilton_available()]))
     print(' - '.join([str(value) for value in is_mariott_available()]))
     print(' - '.join([str(value) for value in is_sharaton_available()]))
     print(' - '.join([str(value) for value in is_westin_available()]))
+    print(' - '.join([str(value) for value in is_hotel_indigo_available()]))

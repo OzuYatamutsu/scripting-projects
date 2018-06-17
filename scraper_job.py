@@ -1,6 +1,6 @@
 from scraper import (
     is_hyatt_available, is_hilton_available, is_mariott_available,
-    is_sharaton_available, is_westin_available
+    is_sharaton_available, is_westin_available, is_hotel_indigo_available
 )
 from pickle import dump
 from os import rename, mkdir
@@ -15,7 +15,7 @@ OUTPUT_URL = '.url'
 def sync(mock=False):
     CHECKS_TO_RUN = {
         'Hyatt': is_hyatt_available, 'Hilton': is_hilton_available, 'Mariott': is_mariott_available,
-        'Sharaton': is_sharaton_available, 'Westin': is_westin_available
+        'Sharaton': is_sharaton_available, 'Westin': is_westin_available, 'Hotel Indigo': is_hotel_indigo_available
     }
 
     sync_result = {}
