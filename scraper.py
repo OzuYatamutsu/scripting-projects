@@ -94,7 +94,8 @@ def is_sharaton_available() -> tuple:
     URL = (
         'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1144&language=en_US&'
         'localeCode=en_US&ES=LPS_1144_EN_SI_BOOKWIDGET_SOUTH_NAD&'
-        f'arrivalDate={START_DATE}&departureDate={END_DATE}'
+        f'arrivalDate={START_DATE}&departureDate={END_DATE}&'
+        'rp=RC:DFRLM,RP:SPG,RP:SPGCPN,PC-SN-COMBO:253151'
     )
 
     with Browser() as browser:
@@ -123,7 +124,8 @@ def is_westin_available() -> tuple:
     URL = (
         'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1023&language=en_US&'
         'localeCode=en_US&ES=LPS_1023_EN_SI_BOOKWIDGET_SOUTH_NAD&'
-        f'arrivalDate={START_DATE}&departureDate={END_DATE}'
+        f'arrivalDate={START_DATE}&departureDate={END_DATE}&'
+        'rp=RC:DFRLM,RP:SPG,RP:SPGCPN,PC-SN-COMBO:253151'
     )
 
     with Browser() as browser:
