@@ -99,8 +99,7 @@ def is_sharaton_available() -> tuple:
     URL = (
         'https://www.starwoodhotels.com/preferredguest/room/index.html?propertyID=1144&language=en_US&'
         'localeCode=en_US&ES=LPS_1144_EN_SI_BOOKWIDGET_SOUTH_NAD&'
-        f'arrivalDate={START_DATE}&departureDate={END_DATE}&'
-        'rp=RC:DFRLM,RP:SPG,RP:SPGCPN,PC-SN-COMBO:253151'
+        f'arrivalDate={START_DATE}&departureDate={END_DATE}'
     )
 
     with Browser() as browser:
