@@ -73,15 +73,20 @@ def is_mariott_available() -> tuple:
             sleep(TIMEOUT_SECS)
             not_available_warning = browser.find_element_by_class_name('l-error-Container')
         except NoSuchElementException:
-            # Available. Get price below:
+            # Might be available. Check for "SOLD OUT" as well
             try:
-                lowest_rate = float(browser.find_element_by_css_selector(
-                    '[href="/reservation/availabilitySearch.mi?propertyCode=ATLMQ&isSearch=true&currency="] '
-                    '> .rate-block > .price-night > .t-price'
-                ).text.strip())
-            except Exception:
-                lowest_rate = 9999.9
-            return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
+                not_available_warning = browser.find_element_by_css_selector('[data-marsha="ATLMQ"] > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > .l-sold-out')
+
+            except NoSuchElementException:
+                # Available. Get price below:
+                try:
+                    lowest_rate = float(browser.find_element_by_css_selector(
+                        '[href="/reservation/availabilitySearch.mi?propertyCode=ATLMQ&isSearch=true&currency="] '
+                        '> .rate-block > .price-night > .t-price'
+                    ).text.strip())
+                except Exception:
+                    lowest_rate = 9999.9
+                return True, f"${lowest_rate:.2f}/night" if lowest_rate != 9999.9 else "AVAILABLE"
         finally:
             browser.save_screenshot('final_state.png')
             with open('.url', 'w') as f:
