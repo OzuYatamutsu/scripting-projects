@@ -108,3 +108,5 @@ venv.bak/
 *.store
 .url
 screengrabs
+config.py
+final_state.png
