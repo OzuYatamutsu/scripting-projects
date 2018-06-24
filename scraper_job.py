@@ -35,7 +35,7 @@ def sync(mock=False):
 
     for hotel, check_func in CHECKS_TO_RUN.items():
         try:
-            previous_result = old_sync_result.get(hotel[0], False)
+            previous_result = old_sync_result.get(hotel, (False, False))[0]
 
             print(f"Running {check_func.__name__}...")
             sync_result[hotel] = check_func() if not mock else (False, 'DEBUG')
